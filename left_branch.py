@@ -3,7 +3,7 @@ import scipy.sparse as sp
 import heapq
 import argparse
 import networkx as nx
-from AGithub.model import GAT as MI, node2vec2
+from AGithub.model import nodeattention as MI, node2vec2
 from numpy import *
 import random
 import os
