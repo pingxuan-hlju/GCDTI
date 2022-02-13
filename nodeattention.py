@@ -309,7 +309,7 @@ class the_modell(nn.Module):
             f_c22 = f_c2 + (f_c2.mul(f_c.t()) + f_c2.mul(f_c3.t()) + f_c2.mul(f_c4.t())) / 4.0
             f_c33 = f_c3 + (f_c3.mul(f_c.t()) + f_c3.mul(f_c2.t()) + f_c3.mul(f_c4.t())) / 4.0
             f_c44 = f_c4 + (f_c4.mul(f_c.t()) + f_c4.mul(f_c2.t()) + f_c4.mul(f_c3.t())) / 4.0
-            final2 = torch.cat((f_c, f_c2, f_c3, f_c4), 1)
+            final2 = torch.cat((f_c1, f_c22, f_c33, f_c44), 1)
             out = self.fully_connected2(final)
             return out
 
