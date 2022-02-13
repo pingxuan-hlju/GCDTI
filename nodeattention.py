@@ -305,10 +305,15 @@ class the_modell(nn.Module):
             f_c3 = final3.view(final3.size()[0], -1)
             f_c4 = final4.view(final4.size()[0], -1)
             final = torch.cat((f_c, f_c2,f_c3,f_c4), 1)
-            f_c1 = f_c + (f_c.mul(f_c2.t()) + f_c.mul(f_c3.t()) + f_c.mul(f_c4.t())) / 4.0
-            f_c22 = f_c2 + (f_c2.mul(f_c.t()) + f_c2.mul(f_c3.t()) + f_c2.mul(f_c4.t())) / 4.0
-            f_c33 = f_c3 + (f_c3.mul(f_c.t()) + f_c3.mul(f_c2.t()) + f_c3.mul(f_c4.t())) / 4.0
-            f_c44 = f_c4 + (f_c4.mul(f_c.t()) + f_c4.mul(f_c2.t()) + f_c4.mul(f_c3.t())) / 4.0
+            sum = f_c.mul(f_c.t()) +f_c.mul(f_c2.t()) + f_c.mul(f_c3.t()) + f_c.mul(f_c4.t())
+            sum2 = f_c2.mul(f_c.t()) + f_c2.mul(f_c2.t()) + f_c2.mul(f_c3.t()) + f_c2.mul(f_c4.t())
+            sum3 = f_c3.mul(f_c.t()) + f_c3.mul(f_c2.t()) + f_c3.mul(f_c3.t()) + f_c3.mul(f_c4.t())
+            sum4 = f_c4.mul(f_c.t()) + f_c4.mul(f_c2.t()) + f_c4.mul(f_c3.t()) + f_c4.mul(f_c4.t())
+            f_c1 = f_c + F.softmax(f_c.mul(f_c.t())/sum)*f_c+F.softmax(f_c.mul(f_c2.t())/sum)*f_c2 + F.softmax(f_c.mul(f_c3.t())/sum)*f_c3 + F.softmax(f_c.mul(f_c4.t())/sum)*f_c4
+            f_c22 = f_c2+ F.softmax(f_c2.mul(f_c.t())/sum2)*f_c+F.softmax(f_c2.mul(f_c2.t())/sum2)*f_c2 + F.softmax(f_c2.mul(f_c3.t())/sum2)*f_c3 + F.softmax( f_c2.mul(f_c4.t()) / sum2) * f_c4
+            f_c33 = f_c3 + F.softmax(f_c3.mul(f_c.t()) / sum3) * f_c + F.softmax(f_c3.mul(f_c2.t()) / sum3) * f_c2 + F.softmax(f_c3.mul(f_c3.t()) / sum3) * f_c3 + F.softmax(f_c3.mul(f_c4.t()) / sum3) * f_c4
+            f_c44 = f_c4 + F.softmax(f_c4.mul(f_c.t()) / sum4) * f_c + F.softmax(f_c4.mul(f_c2.t()) / sum4) * f_c2 + F.softmax(f_c4.mul(f_c3.t()) / sum4) * f_c3 + F.softmax(f_c4.mul(f_c4.t()) / sum4) * f_c4
+  
             final2 = torch.cat((f_c1, f_c22, f_c33, f_c44), 1)
             out = self.fully_connected2(final)
             return out
